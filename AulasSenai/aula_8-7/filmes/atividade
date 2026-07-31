@@ -1,0 +1,15 @@
+menu interativo
+
+0 Adicionar um filme 
+    Titulo 
+    Ano
+    Diretor
+    Gênero
+    Duração
+    
+1 quantidade total de filmes 
+2 informações de um filme pelo titulo
+3 Filmes de um diretor especifico 
+4 Filmes de um Genero 
+5 Média de duração dos filmes 
+6 sair 
