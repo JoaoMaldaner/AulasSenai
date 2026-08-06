@@ -1,2 +1,6 @@
 pack empilha 
 grid coloca lado a lado
+
+
+rowspan -  define quantas linhas o frame ocupa
+columspan define quantas colunas o frame ocupa 
