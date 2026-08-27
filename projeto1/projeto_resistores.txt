@@ -1,0 +1,6 @@
+Criar um programa que calcule a resistencia dos resitores de 4 faixas,
+que possibilite o usuario escolher as cores e de acordo com as cores ele mostre o valor
+o usuario pode solicitar tbm o valor e o programa retorna as cores
+deve ser considerado o valor da tolerancia. 
+
+utilizando o canvas para desenhar o resistor a ser exibido para o usuario
