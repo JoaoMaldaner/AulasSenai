@@ -4,3 +4,17 @@ o usuario pode solicitar tbm o valor e o programa retorna as cores
 deve ser considerado o valor da tolerancia. 
 
 utilizando o canvas para desenhar o resistor a ser exibido para o usuario
+
+
+1 - criar uma interface grafica com o Tkinter 
+2 - entrada de cores -> valor do resistor 
+3 -  seguir as unidades de medidas -> Ohm Kohm Mohm 
+4 -  utilizar botoões e menus suspensos para seleção do usuário
+5 - calculr a tolerancia dos resistores
+6 - Desenhar o resitor e as cores com canva 
+se o usuario informar um valor de resitor -> desenhe um resitor com canva nas cores informadas
+
+
+Adicional - ajudar o usuario a calcular o resitor certo para o projeto. 
+ex se ele tem uma tensão de 5v e um led de 1,5v com carga de 0.10mA calcular a resistencia 
+(usar a lei de Ohm para calcular)
