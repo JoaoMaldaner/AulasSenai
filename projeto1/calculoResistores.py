@@ -31,11 +31,11 @@ TK_CORES = {
     "Prateado": "#C0C0C0"
 }
 
-DIGITOS = list(CORES.keys())[:10]
-MULTIPLICADORES = list(CORES.keys())
-TOLERANCIAS = ["Marrom", "Vermelho", "Verde", "Azul", "Violeta", "Cinza", "Dourado", "Prateado"]
+DIGITOS = list(CORES.keys())[:10] #transforma as cores em uma lista de dígitos (0-9) pega somente os 10 primeiros elementos.
+MULTIPLICADORES = list(CORES.keys()) #pega todas as cores como multiplicadors
+TOLERANCIAS = ["Marrom", "Vermelho", "Verde", "Azul", "Violeta", "Cinza", "Dourado", "Prateado"] #pega somente as cores com tolerancia
 
-
+#função para formatar o valor da resistência em ohms, kiloohms ou megaohms
 def formatar(valor):
     if valor >= 1_000_000:
         return f"{valor / 1_000_000:g} MΩ"
@@ -43,20 +43,21 @@ def formatar(valor):
         return f"{valor / 1_000:g} kΩ"
     return f"{valor:g} Ω"
 
-
+#função para calcular a resistência com base nas cores selecionadas
 def calcular():
     try:
-        c1, c2, mult, tol = v1.get(), v2.get(), vm.get(), vt.get()
-        d1, d2 = CORES[c1][0], CORES[c2][0]
-        fator = CORES[mult][1]
+        c1, c2, mult, tol = v1.get(), v2.get(), vm.get(), vt.get() #variaveis que recebem os valores selecionados nos comboboxes
+        d1, d2 = CORES[c1][0], CORES[c2][0] #digitos correspondentes às cores selecionadas [0] é o dígito da cor e a primeira posição do dicionario
+        fator = CORES[mult][1] #fator de multiplicação correspondente à cor selecionada [1] é o fator de multiplicação da cor e a segunda posição do dicionario
         resistencia = (d1 * 10 + d2) * fator
-        tolerancia = CORES[tol][3]
+
+        tolerancia = CORES[tol][3] #tolerancia = CORES[tol][3] #tolerancia correspondente à cor selecionada [3]
         resultado.config(text=f"{formatar(resistencia)} ± {tolerancia}%")
         desenhar([c1, c2, mult, tol])
     except:
         resultado.config(text="Selecione todas as cores")
 
-
+#função para as cores correspondentes ao valor da resistência digitado
 def valor_para_cores():
     try:
         valor = float(entrada_valor.get())
@@ -71,24 +72,25 @@ def valor_para_cores():
 
         for mult, dados in CORES.items():
             fator = dados[1]
-            if fator and valor / fator >= 10 and valor / fator <= 99:
-                numero = valor / fator
-                if numero.is_integer():
+            if fator and valor / fator >= 10 and valor / fator <= 99: #testa se o valor dividido tem dois digitos entre 10 e 99
+                numero = valor / fator #atribui o valor dividido a variavel
+                if numero.is_integer(): #valida se é um inteiro
                     numero = int(numero)
                     d1, d2 = numero // 10, numero % 10
-                    encontrado = [DIGITOS[d1], DIGITOS[d2], mult]
+                    encontrado = [DIGITOS[d1], DIGITOS[d2], mult] #atribui os digitos a variavel encontrado.
                     break
 
         if not encontrado:
-            resultado.config(text="Valor não representável")
+            resultado.config(text="Valor não representável") #se o valor não for represntavel retorna o erro
+        
             return
 
-        tolerancia = vt.get()
-        resultado.config(text=f"{formatar(valor)} ± {CORES[tolerancia][3]}%")
+        tolerancia = vt.get() #pega a tolerancia selecionada no combobox
+        resultado.config(text=f"{formatar(valor)} ± {CORES[tolerancia][3]}%") #exibe o valor formatado com a tolerância
         v1.set(encontrado[0])
         v2.set(encontrado[1])
         vm.set(encontrado[2])
-        desenhar(encontrado + [tolerancia])
+        desenhar(encontrado + [tolerancia]) #chama a função desenhar passando as cores encontradas e a tolerancia selecionada
 
     except:
         resultado.config(text="Digite um valor válido")
@@ -97,14 +99,14 @@ def valor_para_cores():
 def desenhar(cores):
     canvas.delete("all")
 
-    # Fios
+    # criar os fios do resistor
     canvas.create_line(30, 100, 120, 100, width=4)
     canvas.create_line(380, 100, 470, 100, width=4)
 
     # Corpo
     canvas.create_rectangle(120, 65, 380, 135, fill="#D2B48C", outline="black", width=2)
 
-    # Faixas
+    # criar as faixas de cores dos resistores
     posicoes = [160, 210, 260, 330]
     larguras = [20, 20, 20, 15]
 
@@ -115,27 +117,36 @@ def desenhar(cores):
             outline="black"
         )
 
+        # nome da cor abaixo da faixa
+        canvas.create_text(
+            x + largura / 2,
+            155,
+            text=cor,
+            font=("Arial", 9, "bold")
+        )
 
-# Janela
+# Janela - montando a interface gráfica
 janela = tk.Tk()
 janela.title("Calculadora de Resistores")
 janela.geometry("800x920")
-janela.resizable(False, False)
+janela.resizable(False, False)#não permite redimensionar a janela
 
 tk.Label(
     janela, text="CALCULADORA DE RESISTORES",
     font=("Arial", 18, "bold")
 ).pack(pady=15)
 
-# --- Cores ---
+# setar as cores
 frame_cores = tk.LabelFrame(janela, text="Código de Cores", padx=10, pady=10)
 frame_cores.pack(padx=20, fill="x")
 
-v1 = tk.StringVar(value="Marrom")
+#deixei setado o valor inicial do resistor como 1kΩ ± 5% (Marrom, Preto, Vermelho, Dourado)
+v1 = tk.StringVar(value="Marrom")#variaveis que armazenam os valores selecionados nos comboboxes
 v2 = tk.StringVar(value="Preto")
 vm = tk.StringVar(value="Vermelho")
 vt = tk.StringVar(value="Dourado")
 
+#definição da função combo para criar os comboboxes de seleção de cores
 def combo(frame, texto, variavel, valores, linha):
     tk.Label(frame, text=texto).grid(row=linha, column=0, sticky="w", pady=5)
     ttk.Combobox(
@@ -143,17 +154,17 @@ def combo(frame, texto, variavel, valores, linha):
         values=valores, state="readonly", width=18
     ).grid(row=linha, column=1, padx=10)
 
-combo(frame_cores, "1ª faixa:", v1, DIGITOS, 0)
+combo(frame_cores, "1ª faixa:", v1, DIGITOS, 0) #aplica cada combo em uma linha 
 combo(frame_cores, "2ª faixa:", v2, DIGITOS, 1)
 combo(frame_cores, "Multiplicador:", vm, MULTIPLICADORES, 2)
 combo(frame_cores, "Tolerância:", vt, TOLERANCIAS, 3)
-
+#botão para calcular a resistência com base nas cores selecionadas
 tk.Button(
     frame_cores, text="CALCULAR",
     command=calcular, width=20
 ).grid(row=4, column=0, columnspan=2, pady=10)
 
-# --- Valor para cores ---
+# atribuindo valor das cores
 frame_valor = tk.LabelFrame(janela, text="Valor → Código de Cores", padx=10, pady=10)
 frame_valor.pack(padx=20, pady=10, fill="x")
 
@@ -171,7 +182,7 @@ tk.Button(
     command=valor_para_cores
 ).grid(row=0, column=2, padx=10)
 
-# --- Calculadora de resistor para LED ---
+# Bonus: Calculadora de resistor para LED
 frame_led = tk.LabelFrame(
     janela, text="Calcular Resistor para LED (Lei de Ohm)",
     padx=10, pady=10
@@ -210,10 +221,10 @@ def calcular_led():
         corrente = corrente_ma / 1000
         resistencia = (fonte - led) / corrente
 
-        # Valor comercial aproximado
+        # Valores comerciais
         valores = [
-            10, 12, 15, 18, 22, 27, 33, 39, 47, 51, 56, 62,
-            68, 75, 82, 91
+            10, 12, 15, 18, 22, 27, 33, 39,
+            47, 51, 56, 62, 68, 75, 82, 91
         ]
 
         escala = 1
@@ -225,15 +236,30 @@ def calcular_led():
             escala /= 10
 
         base = resistencia / escala
-        comercial = min(valores, key=lambda x: abs(x - base)) * escala
+
+        comercial = min(
+            valores,
+            key=lambda x: abs(x - base)
+        ) * escala
 
         resultado_led.config(
             text=f"Resistor: {resistencia:g} Ω\n"
                  f"Valor comercial aproximado: {comercial:g} Ω"
         )
 
+        #envia o valor comercial para a calculadora de cores
+        #Usando somente o valor Ohms para facilitar a conversão.
+        entrada_valor.delete(0, tk.END)  
+        entrada_valor.insert(0, str(comercial))
+        unidade_var.set("Ω")
+
+        #converte automaticamente para as cores
+        valor_para_cores()
+
     except ValueError:
-        resultado_led.config(text="Digite apenas valores numéricos")
+        resultado_led.config(
+            text="Digite apenas valores numéricos"
+        )
 
 
 tk.Button(
@@ -243,14 +269,14 @@ tk.Button(
     width=22
 ).grid(row=3, column=0, columnspan=3, pady=8)
 
-# --- Resultado ---
+# apresntando resultado
 resultado = tk.Label(
     janela, text="1 kΩ ± 5%",
     font=("Arial", 20, "bold")
 )
 resultado.pack(pady=15)
 
-# --- Canvas ---
+# chamando canvas
 canvas = tk.Canvas(
     janela, width=500, height=180,
     bg="white", highlightthickness=1
