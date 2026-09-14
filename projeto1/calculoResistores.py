@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
+# dicionario com as cores e seus respectivos valores, multiplicadores e tolerâncias
 CORES = {
     "Preto": (0, 1, 20, None), 
     "Marrom": (1, 10, 100, 1),
@@ -16,6 +17,7 @@ CORES = {
     "Prateado": (None, 0.01, None, 10)
 }
 
+# dicionario com as cores e seus respectivos valores em hexadecimal para interface grafica
 TK_CORES = {
     "Preto": "#000000", 
     "Marrom": "#8B4513", 
@@ -221,7 +223,7 @@ def calcular_led():
         corrente = corrente_ma / 1000
         resistencia = (fonte - led) / corrente
 
-        # Valores comerciais
+        # valores comerciais, chama os valores mais proximo dos resistores comercializados
         valores = [
             10, 12, 15, 18, 22, 27, 33, 39,
             47, 51, 56, 62, 68, 75, 82, 91
@@ -230,14 +232,15 @@ def calcular_led():
         escala = 1
 
         while resistencia / escala >= 100:
-            escala *= 10
+            escala *= 10 #multiplica a escala por 10 enquanto a resistência dividida pela escala for maior ou igual a 100
 
         while resistencia / escala < 10:
-            escala /= 10
+            escala /= 10 #divide a escala por 10 enquanto a resistência dividida pela escala for menor que 10
 
-        base = resistencia / escala
+        base = resistencia / escala #cria a variavel base que recebe a resistencia dividida pela escala
 
-        comercial = min(
+        #encontra o valor comercial mais próximo
+        comercial = min( 
             valores,
             key=lambda x: abs(x - base)
         ) * escala
@@ -247,13 +250,13 @@ def calcular_led():
                  f"Valor comercial aproximado: {comercial:g} Ω"
         )
 
-        #envia o valor comercial para a calculadora de cores
-        #Usando somente o valor Ohms para facilitar a conversão.
+        # envia o valor comercial para a calculadora de cores
+        # usando somente o valor Ohms para facilitar a conversão.
         entrada_valor.delete(0, tk.END)  
         entrada_valor.insert(0, str(comercial))
         unidade_var.set("Ω")
 
-        #converte automaticamente para as cores
+        # converte automaticamente para as cores
         valor_para_cores()
 
     except ValueError:
