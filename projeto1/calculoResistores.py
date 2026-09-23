@@ -53,7 +53,7 @@ def calcular():
         fator = CORES[mult][1] #fator de multiplicação correspondente à cor selecionada [1] é o fator de multiplicação da cor e a segunda posição do dicionario
         resistencia = (d1 * 10 + d2) * fator
 
-        tolerancia = CORES[tol][3] #tolerancia = CORES[tol][3] #tolerancia correspondente à cor selecionada [3]
+        tolerancia = CORES[tol][3]  #tolerancia correspondente à cor selecionada [3]
         resultado.config(text=f"{formatar(resistencia)} ± {tolerancia}%")
         desenhar([c1, c2, mult, tol])
     except:
