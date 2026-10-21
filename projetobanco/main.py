@@ -51,7 +51,7 @@ def tela_sacar(usuario_logado, janela_menu):
     e_valor = tk.Entry(f, font=("Arial", 14), justify="center")
     e_valor.pack(pady=5)
 
-    def processar_saque():
+    def processar_saque(event=None):
         val_str = e_valor.get().strip().replace(",", ".") #altera os caracteres de virgula e ponto para aceitar ambos
         try:
             valor = float(val_str)
@@ -129,7 +129,14 @@ def tela_sacar(usuario_logado, janela_menu):
             jan_s.destroy()
             janela_menu.after(100, lambda: messagebox.showinfo("Sucesso", detalhes_cedulas, parent=janela_menu))
 
-    tk.Button(f, text="Confirmar Saque", font=("Arial", 12), bg=verde_escuro, fg=branco, command=processar_saque, width=15).pack(pady=15)
+    def voltar(event=None):
+        jan_s.destroy()
+
+    e_valor.bind("<Return>", processar_saque)
+    jan_s.bind("<Escape>", voltar)
+
+    tk.Button(f, text="Confirmar Saque", font=("Arial", 12), bg=verde_escuro, fg=branco, command=processar_saque, width=15).pack(pady=10)
+    tk.Button(f, text="Voltar", font=("Arial", 12), bg=cinza, fg=preto, command=voltar, width=15).pack(pady=5)
 
 # função de depositar o dinheiro
 def tela_depositar(usuario_logado, janela_menu):
@@ -146,7 +153,7 @@ def tela_depositar(usuario_logado, janela_menu):
     e_valor = tk.Entry(f, font=("Arial", 14), justify="center")
     e_valor.pack(pady=5)
 
-    def processar_deposito():
+    def processar_deposito(event=None):
         val_str = e_valor.get().strip().replace(",", ".") #altera os caracteres de virgula e ponto para aceitar ambos
         try:
             valor = float(val_str)
@@ -170,7 +177,14 @@ def tela_depositar(usuario_logado, janela_menu):
             jan_d.destroy()
             janela_menu.after(100, lambda: messagebox.showinfo("Sucesso", f"Depósito de R$ {valor:.2f} realizado com sucesso!\nNovo saldo: R$ {novo_saldo:.2f}", parent=janela_menu))
 
-    tk.Button(f, text="Confirmar Depósito", font=("Arial", 12), bg=verde_escuro, fg=branco, command=processar_deposito, width=18).pack(pady=15)
+    def voltar(event=None):
+        jan_d.destroy()
+
+    e_valor.bind("<Return>", processar_deposito)
+    jan_d.bind("<Escape>", voltar)
+
+    tk.Button(f, text="Confirmar Depósito", font=("Arial", 12), bg=verde_escuro, fg=branco, command=processar_deposito, width=18).pack(pady=10)
+    tk.Button(f, text="Voltar", font=("Arial", 12), bg=cinza, fg=preto, command=voltar, width=18).pack(pady=5)
 
 # criando menu principal
 def abrir_menu(usuario_logado):
@@ -223,9 +237,11 @@ def abrir_menu(usuario_logado):
             janela_menu.destroy()
             login.tela_login()
 
-    def encerrar_programa():
+    def encerrar_programa(event=None):
         if messagebox.askokcancel("Encerrar", "Deseja fechar todo o programa?"):
             janela_menu.destroy()
+
+    janela_menu.bind("<Return>", lambda e: tela_saldo(usuario_logado))
 
     frame_inferior = tk.Frame(janela_menu, bg=branco)
     frame_inferior.pack(side="bottom", pady=40)

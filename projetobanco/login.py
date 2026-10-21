@@ -183,6 +183,7 @@ def tela_login():
             messagebox.showerror("Erro", "Usuário ou senha incorretos!")
 
     tk.Button(f, text="Entrar", font=("Arial", 14), bg=verde_escuro, fg=branco, command=logar, width=15).pack(pady=15)
+    jan.bind("<Return>", lambda event: logar())
     tk.Button(f, text="Criar Conta", font=("Arial", 12), bg=azul_claro, command=lambda: tela_cad(jan), width=15).pack()
 
     jan.mainloop()
