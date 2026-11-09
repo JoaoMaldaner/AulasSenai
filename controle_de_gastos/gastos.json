@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "descricao": "salario",
+        "valor": 6000.0,
+        "tipo": "receita",
+        "data": "21:06:07 21/10/2026"
+    },
+    {
+        "id": 2,
+        "descricao": "mercado",
+        "valor": 300.0,
+        "tipo": "despesa",
+        "data": "21:06:21 21/10/2026"
+    },
+    {
+        "id": 3,
+        "descricao": "Salario",
+        "valor": 4000.0,
+        "tipo": "receita",
+        "data": "21:48:33 21/10/2026"
+    },
+    {
+        "id": 4,
+        "descricao": "mercado",
+        "valor": 400.0,
+        "tipo": "despesa",
+        "data": "21:48:57 21/10/2026"
+    }
+]
