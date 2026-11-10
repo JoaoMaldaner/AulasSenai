@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "nome": "Mouse",
+        "fornecedor": "HP",
+        "preco": 60.0,
+        "quantidade": 8
+    },
+    {
+        "id": 2,
+        "nome": "Teclado",
+        "fornecedor": "HP",
+        "preco": 80.0,
+        "quantidade": 8
+    }
+]
