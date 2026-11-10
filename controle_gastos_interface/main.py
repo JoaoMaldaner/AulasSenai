@@ -32,6 +32,13 @@ def obter_id():
     return max(int(gasto["id"]) for gasto in gastos) + 1
 
 
+# reordenar os IDs sequencialmente (1, 2, 3...)
+def reordenar_ids(gastos):
+    for indice, item in enumerate(gastos, start=1):
+        item["id"] = indice
+    return gastos
+
+
 # somar as receitas e subtrair as despesas
 def calcular_saldo():
     gastos = carregar_gastos()
@@ -44,11 +51,12 @@ def calcular_saldo():
     return saldo
 
 
-# remove um gasto pelo ID do arquivo JSON
+# remove um gasto pelo ID do arquivo JSON e reorganiza a sequencia de IDs
 def excluir_gasto(id_gasto):
     gastos = carregar_gastos()
     gastos_filtrados = [g for g in gastos if g["id"] != id_gasto]
-    salvar_dados(gastos_filtrados)
+    gastos_reordenados = reordenar_ids(gastos_filtrados)
+    salvar_dados(gastos_reordenados)
 
 
 # abrir a janela para cadastrar receita ou despesa
@@ -195,14 +203,14 @@ def janela_listar(atualizar_tela=None):
 
         if confirmacao:
             excluir_gasto(id_gasto)
-            carregar_tabela()  # Atualiza a lista exibida
+            carregar_tabela()  # Atualiza a lista exibida com os novos IDs
 
             # Atualiza o saldo no menu principal
             if atualizar_tela:
                 atualizar_tela()
 
             messagebox.showinfo(
-                "Sucesso", "Movimentação excluída!", parent=janela
+                "Sucesso", "Movimentação excluída e IDs atualizados!", parent=janela
             )
 
     # Botão de Excluir
@@ -219,11 +227,76 @@ def janela_listar(atualizar_tela=None):
     btn_excluir.pack(side=tk.RIGHT)
 
 
+# abrir a janela com o relatorio financeiro (total receitas, despesas e saldo)
+def janela_relatorio():
+    gastos = carregar_gastos()
+
+    total_receitas = sum(g["valor"] for g in gastos if g["tipo"] == "receita")
+    total_despesas = sum(g["valor"] for g in gastos if g["tipo"] == "despesa")
+    saldo = total_receitas - total_despesas
+
+    janela = tk.Toplevel()
+    janela.title("Relatório Financeiro")
+    janela.geometry("320x220")
+    janela.resizable(False, False)
+    janela.grab_set()
+
+    tk.Label(
+        janela, text="Resumo de Movimentações", font=("Arial", 14, "bold")
+    ).pack(pady=(15, 10))
+
+    frame_info = tk.Frame(janela)
+    frame_info.pack(pady=5, padx=15, fill=tk.X)
+
+    # Receitas
+    tk.Label(frame_info, text="Total de Receitas:", font=("Arial", 11)).grid(
+        row=0, column=0, sticky="w", pady=4
+    )
+    tk.Label(
+        frame_info,
+        text=f"R$ {total_receitas:.2f}",
+        font=("Arial", 11, "bold"),
+        fg="green",
+    ).grid(row=0, column=1, sticky="e", padx=(20, 0), pady=4)
+
+    # Despesas
+    tk.Label(frame_info, text="Total de Despesas:", font=("Arial", 11)).grid(
+        row=1, column=0, sticky="w", pady=4
+    )
+    tk.Label(
+        frame_info,
+        text=f"R$ {total_despesas:.2f}",
+        font=("Arial", 11, "bold"),
+        fg="red",
+    ).grid(row=1, column=1, sticky="e", padx=(20, 0), pady=4)
+
+    # Divisor simples
+    ttk.Separator(frame_info, orient="horizontal").grid(
+        row=2, column=0, columnspan=2, sticky="ew", pady=8
+    )
+
+    # Saldo
+    cor_saldo = "green" if saldo >= 0 else "red"
+    tk.Label(frame_info, text="Saldo Líquido:", font=("Arial", 11, "bold")).grid(
+        row=3, column=0, sticky="w", pady=4
+    )
+    tk.Label(
+        frame_info,
+        text=f"R$ {saldo:.2f}",
+        font=("Arial", 11, "bold"),
+        fg=cor_saldo,
+    ).grid(row=3, column=1, sticky="e", padx=(20, 0), pady=4)
+
+    tk.Button(
+        janela, text="Fechar", width=15, command=janela.destroy
+    ).pack(pady=15)
+
+
 # montar e exibir a janela principal
 def janela_principal():
     menu = tk.Tk()
     menu.title("Controle de Gastos")
-    menu.geometry("350x360")
+    menu.geometry("350x400")
     menu.resizable(False, False)
 
     tk.Label(menu, text="Controle de Gastos", font=("Arial", 16, "bold")).pack(
@@ -245,25 +318,31 @@ def janela_principal():
         text="Adicionar Receita",
         width=25,
         command=lambda: janela_adicionar("receita", atualizar_saldo_label),
-    ).pack(pady=6)
+    ).pack(pady=5)
     tk.Button(
         menu,
         text="Adicionar Despesa",
         width=25,
         command=lambda: janela_adicionar("despesa", atualizar_saldo_label),
-    ).pack(pady=6)
+    ).pack(pady=5)
     tk.Button(
         menu,
         text="Listar Movimentações",
         width=25,
         command=lambda: janela_listar(atualizar_saldo_label),
-    ).pack(pady=6)
+    ).pack(pady=5)
+    tk.Button(
+        menu,
+        text="Relatório Financeiro",
+        width=25,
+        command=janela_relatorio,
+    ).pack(pady=5)
     tk.Button(
         menu,
         text="Atualizar Saldo",
         width=25,
         command=atualizar_saldo_label,
-    ).pack(pady=6)
+    ).pack(pady=5)
     tk.Button(
         menu, text="Sair", width=25, command=menu.destroy, fg="red"
     ).pack(pady=12)

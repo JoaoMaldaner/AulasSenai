@@ -1,16 +1,16 @@
 [
     {
         "id": 1,
-        "descricao": "salario",
-        "valor": 3000.0,
-        "tipo": "receita",
-        "data": "19:41:52 26/10/2026"
-    },
-    {
-        "id": 2,
         "descricao": "mercado",
         "valor": 200.0,
         "tipo": "despesa",
         "data": "19:42:13 26/10/2026"
+    },
+    {
+        "id": 2,
+        "descricao": "ttt",
+        "valor": 700.0,
+        "tipo": "receita",
+        "data": "21:06:54 09/11/2026"
     }
 ]
