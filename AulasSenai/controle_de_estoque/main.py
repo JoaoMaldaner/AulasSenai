@@ -34,37 +34,66 @@ def reordenar_ids(estoque):
         item["id"] = indice
     return estoque
 
-def adicionar_produto():
-    #adiciona um produto ao arquivo .json
-    nome = input("Digite o nome do produto: ")
-    fornecedor = input("Digite o nome do fornecedor: ")
+
+#adicinar produto e verificar se o nome do produto ja existe caso ja exista, adiciona no ID do mesmo se não ele cria um novo id
+def adicionar_produto(nome):
+    estoque = carregar_estoque()
+    nome_simples = nome.strip().lower()
+
+    for produto in estoque:
+        if produto["nome"].strip().lower() == nome_simples:
+            print("Produto já cadastrado. Adicionando quantidade ao produto existente.")
+            while True:
+                try:
+                    quantidade_adicional = int(input("Digite a quantidade a ser adicionada: "))
+                    if quantidade_adicional < 0:
+                        print("Quantidade inválida. Digite um número positivo.")
+                        continue
+                    break
+                except ValueError:
+                    print("Quantidade inválida. Digite um número inteiro.")
+
+            produto["quantidade"] += quantidade_adicional
+            salvar_dados(estoque)
+            print("Quantidade adicionada com sucesso.")
+            return
+    novo_id = obter_id()
+
+
+    qunatidade = input("Digite a quantidade a ser adicionada: ")
     while True:
         try:
-            preco = float(input("Digite o preço do produto: "))
+            quantidade = int(qunatidade)
+            if quantidade < 5:
+                print("Quantidade mínima é 5. Definindo quantidade como 5.")
+                quantidade = 5
             break
         except ValueError:
-            print("Valor inválido. Digite um numero válido. ")
+            print("Quantidade inválida. Digite um número inteiro.")
+            qunatidade = input("Digite a quantidade a ser adicionada: ")
+
+    fornecedor = input("Digite o nome do fornecedor: ")
+    preco = input("Digite o preço do produto: ")
     while True:
         try:
-            quantidade = int(input("Digite a quantidade em estoque (mínimo 5 unidades): "))
-            if quantidade < 5:
-                print("Quantidade mínima é de 5 unidades. Digite novamente.")
+            preco = float(preco)
+            if preco < 0:
+                print("Preço inválido. Digite um número positivo.")
+                preco = input("Digite o preço do produto: ")
                 continue
             break
         except ValueError:
-            print("Valor inválido. Digite um numero válido. ")
-
-    produto = {
-        "id": obter_id(),
+            print("Preço inválido. Digite um número válido.")
+            preco = input("Digite o preço do produto: ")
+    novo_produto = {
+        "id": novo_id,
         "nome": nome,
         "fornecedor": fornecedor,
         "preco": preco,
         "quantidade": quantidade
     }
 
-    estoque = carregar_estoque()
-    estoque.append(produto)
-    salvar_dados(estoque)
+    
 
 
 def listar_produtos():
@@ -105,38 +134,6 @@ def excluir_produto():
 
     print("Produto não encontrado.")
 
-def adicionar_ao_id_existente():
-    #adiciona quantidade a um produto existente no arquivo .json
-    estoque = carregar_estoque()
-    if not estoque:
-        print("Nenhum produto cadastrado.")
-        return
-
-    listar_produtos()
-    while True:
-        try:
-            id_adicionar = int(input("Digite o ID do produto que deseja adicionar quantidade: "))
-            break
-        except ValueError:
-            print("ID inválido. Digite um numero válido. ")
-
-    for produto in estoque:
-        if produto["id"] == id_adicionar:
-            while True:
-                try:
-                    quantidade_adicionar = int(input("Digite a quantidade que deseja adicionar: "))
-                    if quantidade_adicionar <= 0:
-                        print("Quantidade deve ser maior que zero. Digite novamente.")
-                        continue
-                    break
-                except ValueError:
-                    print("Valor inválido. Digite um numero válido. ")
-            produto["quantidade"] += quantidade_adicionar
-            salvar_dados(estoque)
-            print(f"Quantidade adicionada com sucesso. Novo estoque: {produto['quantidade']} unidades.")
-            return
-
-    print("Produto não encontrado.")
 
     
 
