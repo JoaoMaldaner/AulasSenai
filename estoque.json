@@ -1,0 +1,9 @@
+[
+    {
+        "id": 1,
+        "nome": "Mouse Dell",
+        "fornecedor": "Braile",
+        "preco": 40.0,
+        "quantidade": 20
+    }
+]
